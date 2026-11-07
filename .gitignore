@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+dist/
+build/
+
+# Segredos (princípio 7)
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Documentos de clientes e autos (seção 8.5): nunca versionar
+*.docx
+*.doc
+*.pdf
+*.xlsx
+*.msg
+*.eml
+autos/
+clientes/
+dados/
+
+# Exceções: modelos do escritório sem dados de cliente, quando aprovados
+!src/assistente/pecas/modelos/*.docx

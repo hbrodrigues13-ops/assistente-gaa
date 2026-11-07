@@ -1,0 +1,1 @@
+"""Assistente jurídico do GAA."""
