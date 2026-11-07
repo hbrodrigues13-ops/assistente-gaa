@@ -22,5 +22,6 @@ O leis-mcp (decisão 0001) não traz acórdãos com relator e data. A Advocacia 
 ## Limites
 
 - Acórdãos de Turmas do STJ e do TJSP não estão cobertos. Esses continuam na lista "a verificar".
+- Complemento para o TJSP: o acervo Licitei/precedentes, acessado pela fonte `precedentes` do dados-publicos-mcp (decisão 0003), traz as 165 súmulas do TJSP (livro de 16/09/2025), os enunciados das Câmaras Reservadas de Direito Empresarial (atualização de 10/12/2024) e 237 IRDRs do TJSP do Banco Nacional de Precedentes (recontagem de 06/11/2026). O próprio acervo declara cobertura parcial e não certifica vigência.
 - A busca no TJPR e o exemplo penal do projeto não se aplicam ao GAA.
 - Os protocolos de redação e revisão servem de referência, mas as skills do GAA prevalecem.
