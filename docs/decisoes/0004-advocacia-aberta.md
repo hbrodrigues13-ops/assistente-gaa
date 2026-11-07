@@ -1,6 +1,6 @@
 # Decisão 0004: base jurídica da Advocacia Aberta para verificar jurisprudência
 
-Data: 07/11/2026. Pendente de aprovação de Henrique.
+Data: 07/11/2026. Aprovada por Henrique Borges Rodrigues.
 
 ## Contexto
 
@@ -13,7 +13,7 @@ O leis-mcp (decisão 0001) não traz acórdãos com relator e data. A Advocacia 
 - 12.156 espelhos de acórdãos da Corte Especial e das Seções do STJ, com relator, data de publicação, ementa e link;
 - legislação em JSON, inclusive Decreto-Lei 911/1969 e Lei 10.931/2004.
 
-## Proposta
+## Decisão
 
 1. Na Fase 3, a verificação de citações consulta esses JSONs para súmula, tema e acórdão do STJ e do STF: confere número, órgão, relator, data e trecho, de forma determinística.
 2. Os dados não entram no Git. Um script baixa a versão fixada por commit para a pasta de dados local, com hash conferido.
