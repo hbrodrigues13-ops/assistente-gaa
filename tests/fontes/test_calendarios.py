@@ -76,3 +76,80 @@ def test_foro_sem_comarca_cadastrada_fica_nao_conferido() -> None:
     cal = carregar_calendario(2026, "9999")
     assert cal.comarca is None
     assert not cal.conferido
+
+
+def test_carnaval_2026_vencimento_na_quarta_de_cinzas_prorroga() -> None:
+    cal = carregar_calendario(2026, "0344")
+    # disponibilizado qua 04/02; publicado qui 05/02; início sex 06/02
+    # conta 06, 09, 10, 11, 12, 13 (6), 18/02 seria o 7º: 16 e 17 sem expediente
+    prazo = calcular_prazo(date(2026, 2, 4), 7, cal)
+    assert prazo.inicio == date(2026, 2, 6)
+    assert prazo.vencimento == date(2026, 2, 19)
+    assert any("224, § 1º" in a for a in prazo.avisos)
+
+
+def test_semana_santa_e_tiradentes_2026() -> None:
+    cal = carregar_calendario(2026, "0344")
+    # disponibilizado ter 31/03; publicado qua 01/04; 02 e 03/04 sem expediente
+    # início seg 06/04; conta 06, 07, 08, 09, 10, 13, 14, 15, 16, 17 (10),
+    # 20 e 21/04 sem expediente; 22, 23, 24, 27, 28 (15)
+    prazo = calcular_prazo(date(2026, 3, 31), 15, cal)
+    assert prazo.publicacao == date(2026, 4, 1)
+    assert prazo.inicio == date(2026, 4, 6)
+    assert prazo.seguranca == date(2026, 4, 14)
+    assert prazo.vencimento == date(2026, 4, 28)
+
+
+def test_tabela_com_fim_antes_do_inicio_e_rejeitada(monkeypatch: pytest.MonkeyPatch) -> None:
+    from assistente.fontes import calendarios
+
+    tabela = {
+        "conferido": True,
+        "eventos": [
+            {
+                "inicio": date(2030, 5, 10),
+                "fim": date(2030, 5, 9),
+                "tipo": "feriado",
+                "descricao": "x",
+                "fonte": "t",
+            }
+        ],
+    }
+    original = calendarios._ler
+    monkeypatch.setattr(
+        calendarios,
+        "_ler",
+        lambda tribunal, arquivo: tabela if arquivo == "2030.toml" else original(tribunal, arquivo),
+    )
+    with pytest.raises(ValueError, match="fim antes do início"):
+        carregar_calendario(2030, "0344")
+
+
+def test_carrega_dois_anos_quando_ha_tabela_seguinte(monkeypatch: pytest.MonkeyPatch) -> None:
+    from assistente.fontes import calendarios
+
+    tabelas = {
+        "2030.toml": {"conferido": True, "eventos": []},
+        "2031.toml": {
+            "conferido": True,
+            "eventos": [
+                {
+                    "inicio": date(2031, 2, 3),
+                    "tipo": "suspensao_expediente",
+                    "descricao": "x",
+                    "fonte": "t",
+                }
+            ],
+        },
+    }
+    original = calendarios._ler
+    monkeypatch.setattr(
+        calendarios,
+        "_ler",
+        lambda tribunal, arquivo: tabelas.get(arquivo) or original(tribunal, arquivo),
+    )
+    cal = carregar_calendario(2030, "0344")
+    assert cal.conferido
+    assert cal.cobertura_ate == date(2031, 12, 31)
+    assert not cal.tem_expediente(date(2031, 2, 3))
+    assert not cal.tem_expediente(date(2031, 1, 1))  # feriado federal do ano seguinte
