@@ -22,9 +22,9 @@ build/
 *.xlsx
 *.msg
 *.eml
-autos/
-clientes/
-dados/
+/autos/
+/clientes/
+/dados/
 
 # Exceções: modelos do escritório sem dados de cliente, quando aprovados
 !src/assistente/pecas/modelos/*.docx

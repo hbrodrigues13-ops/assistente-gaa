@@ -1,0 +1,5 @@
+# Foro de origem do número CNJ (segmento OOOO, justiça 8, tribunal 26) -> comarca.
+# Acrescentar foros conforme os processos aparecerem, sempre com fonte.
+
+[foros]
+"0344" = "marilia"
