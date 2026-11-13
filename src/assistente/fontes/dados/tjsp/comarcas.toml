@@ -1,5 +1,14 @@
 # Foro de origem do número CNJ (segmento OOOO, justiça 8, tribunal 26) -> comarca.
 # Acrescentar foros conforme os processos aparecerem, sempre com fonte.
+# Enquanto feriados_municipais_conferidos = false, todo prazo da comarca sai com aviso.
 
 [foros]
-"0344" = "marilia"
+"0344" = "marilia"  # Marília, sede do GAA
+"0100" = "sao_paulo"  # Foro Central Cível (fórum de jurimetria da ABJ)
+"0020" = "sao_paulo"  # Foro Regional XII, Nossa Senhora do Ó (autos da execução FB Máquinas)
+
+[comarcas.marilia]
+feriados_municipais_conferidos = false
+
+[comarcas.sao_paulo]
+feriados_municipais_conferidos = false

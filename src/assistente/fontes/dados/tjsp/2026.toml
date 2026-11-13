@@ -15,43 +15,43 @@ inicio = 2026-01-01
 fim = 2026-01-06
 tipo = "suspensao_expediente"
 descricao = "Recesso forense, sem expediente"
-fonte = "Prov. CSM 2.813/2025"
+fonte = "Prov. CSM 2.813/2025, art. 1º, § 1º (DJE 25/11/2025, p. 2)"
 
 [[eventos]]
 inicio = 2026-02-16
 tipo = "suspensao_expediente"
 descricao = "Segunda-feira de Carnaval"
-fonte = "A CONFERIR: Prov. CSM 2.813/2025"
+fonte = "Prov. CSM 2.813/2025, art. 1º (DJE 25/11/2025, p. 2)"
 
 [[eventos]]
 inicio = 2026-02-18
 tipo = "expediente_irregular"
-descricao = "Quarta-feira de Cinzas, expediente a partir das 13h"
-fonte = "A CONFERIR: Prov. CSM 2.813/2025"
+descricao = "Quarta-feira de Cinzas, atendimento a partir das 13h"
+fonte = "Prov. CSM 2.813/2025, art. 2º, § 2º (DJE 25/11/2025, p. 2)"
 
 [[eventos]]
 inicio = 2026-04-02
 tipo = "suspensao_expediente"
-descricao = "Quinta-feira Santa"
-fonte = "A CONFERIR: Prov. CSM 2.813/2025"
+descricao = "Endoenças (Quinta-feira Santa)"
+fonte = "Prov. CSM 2.813/2025, art. 1º (DJE 25/11/2025, p. 2)"
 
 [[eventos]]
 inicio = 2026-04-20
 tipo = "suspensao_expediente"
 descricao = "Véspera de Tiradentes (ponte)"
-fonte = "Prov. CSM 2.813/2025"
+fonte = "Prov. CSM 2.813/2025, art. 1º (DJE 25/11/2025, p. 2)"
 
 [[eventos]]
 inicio = 2026-06-04
 tipo = "suspensao_expediente"
 descricao = "Corpus Christi"
-fonte = "A CONFERIR: Prov. CSM 2.813/2025"
+fonte = "Prov. CSM 2.813/2025, art. 1º (DJE 25/11/2025, p. 2)"
 
 [[eventos]]
 inicio = 2026-06-05
 tipo = "suspensao_expediente"
 descricao = "Sexta-feira após Corpus Christi (ponte)"
-fonte = "Prov. CSM 2.813/2025"
+fonte = "Prov. CSM 2.813/2025, art. 1º (DJE 25/11/2025, p. 2)"
 
 [[eventos]]
 inicio = 2026-07-09
@@ -63,32 +63,32 @@ fonte = "Lei estadual SP 9.497/1997"
 inicio = 2026-07-10
 tipo = "suspensao_expediente"
 descricao = "Sexta-feira após 9 de julho (ponte)"
-fonte = "Prov. CSM 2.813/2025"
+fonte = "Prov. CSM 2.813/2025, art. 1º (DJE 25/11/2025, p. 2)"
 
 [[eventos]]
 inicio = 2026-10-30
 tipo = "suspensao_expediente"
 descricao = "Dia do Funcionário Público, transferido de 28/10 (que tem expediente)"
-fonte = "Prov. CSM 2.845/2026"
+fonte = "Prov. CSM 2.845/2026 (A CONFERIR no texto oficial; citado em nota do Prov. CSM 2.813/2025)"
 
 [[eventos]]
 inicio = 2026-12-07
 tipo = "suspensao_expediente"
 descricao = "Véspera do Dia da Justiça (ponte)"
-fonte = "Prov. CSM 2.813/2025"
+fonte = "Prov. CSM 2.813/2025, art. 1º (DJE 25/11/2025, p. 2)"
 
 [[eventos]]
 inicio = 2026-12-08
 tipo = "feriado"
 descricao = "Dia da Justiça"
-fonte = "Lei 1.408/1951, art. 5º; A CONFERIR a data no Prov. CSM 2.813/2025"
+fonte = "Lei 1.408/1951, art. 5º; Prov. CSM 2.813/2025, art. 1º (DJE 25/11/2025, p. 2)"
 
 [[eventos]]
 inicio = 2026-12-20
 fim = 2026-12-31
 tipo = "suspensao_expediente"
 descricao = "Recesso forense, sem expediente"
-fonte = "Prov. CSM 2.813/2025"
+fonte = "Prov. CSM 2.813/2025, art. 1º, § 1º (DJE 25/11/2025, p. 2)"
 
 # Marília
 

@@ -130,6 +130,10 @@ def test_carrega_dois_anos_quando_ha_tabela_seguinte(monkeypatch: pytest.MonkeyP
 
     tabelas = {
         "2030.toml": {"conferido": True, "eventos": []},
+        "comarcas.toml": {
+            "foros": {"0344": "marilia"},
+            "comarcas": {"marilia": {"feriados_municipais_conferidos": True}},
+        },
         "2031.toml": {
             "conferido": True,
             "eventos": [
@@ -153,3 +157,40 @@ def test_carrega_dois_anos_quando_ha_tabela_seguinte(monkeypatch: pytest.MonkeyP
     assert cal.cobertura_ate == date(2031, 12, 31)
     assert not cal.tem_expediente(date(2031, 2, 3))
     assert not cal.tem_expediente(date(2031, 1, 1))  # feriado federal do ano seguinte
+
+
+@pytest.mark.parametrize(
+    ("foro", "comarca"),
+    [("0344", "marilia"), ("0100", "sao_paulo"), ("0020", "sao_paulo")],
+)
+def test_foros_cadastrados(foro: str, comarca: str) -> None:
+    assert comarca_do_foro(foro) == comarca
+
+
+def test_comarca_sem_feriados_municipais_conferidos_fica_nao_conferida(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from assistente.fontes import calendarios
+
+    dados = {
+        "2030.toml": {"conferido": True, "eventos": []},
+        "comarcas.toml": {
+            "foros": {"0344": "marilia", "0100": "sao_paulo"},
+            "comarcas": {
+                "marilia": {"feriados_municipais_conferidos": True},
+                "sao_paulo": {"feriados_municipais_conferidos": False},
+            },
+        },
+    }
+    monkeypatch.setattr(calendarios, "_ler", lambda tribunal, arquivo: dados.get(arquivo))
+    assert carregar_calendario(2030, "0344").conferido
+    assert not carregar_calendario(2030, "0100").conferido
+
+
+def test_prazo_foro_central_novembro_2026() -> None:
+    cal = carregar_calendario(2026, "0100")
+    # disponibilizado ter 13/10; 30/10 (Dia do Servidor transferido) e 02/11 sem expediente
+    prazo = calcular_prazo(date(2026, 10, 13), 15, cal)
+    assert prazo.inicio == date(2026, 10, 15)
+    assert prazo.seguranca == date(2026, 10, 23)
+    assert prazo.vencimento == date(2026, 11, 6)

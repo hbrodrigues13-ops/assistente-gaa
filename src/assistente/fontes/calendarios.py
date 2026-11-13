@@ -29,6 +29,11 @@ def _ler(tribunal: str, arquivo: str) -> dict[str, Any] | None:
     return tomllib.loads(caminho.read_text(encoding="utf-8"))
 
 
+def _feriados_municipais_conferidos(comarca: str, tribunal: str) -> bool:
+    dados = _ler(tribunal, "comarcas.toml") or {}
+    return bool(dados.get("comarcas", {}).get(comarca, {}).get("feriados_municipais_conferidos"))
+
+
 def comarca_do_foro(foro: str, tribunal: str = "tjsp") -> str | None:
     dados = _ler(tribunal, "comarcas.toml") or {}
     comarca = dados.get("foros", {}).get(foro)
@@ -79,7 +84,11 @@ def carregar_calendario(ano: int, foro: str, tribunal: str = "tjsp") -> Calendar
         eventos.extend(dias_sem_expediente_lei_federal(atual))
         for registro in dados.get("eventos", []):
             eventos.extend(_expandir(registro))
-    conferido = comarca is not None and all(bool(d.get("conferido")) for _, d in tabelas)
+    conferido = (
+        comarca is not None
+        and _feriados_municipais_conferidos(comarca, tribunal)
+        and all(bool(d.get("conferido")) for _, d in tabelas)
+    )
     ultimo_ano = tabelas[-1][0]
     return Calendario(
         eventos,
