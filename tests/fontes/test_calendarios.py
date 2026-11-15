@@ -161,7 +161,19 @@ def test_carrega_dois_anos_quando_ha_tabela_seguinte(monkeypatch: pytest.MonkeyP
 
 @pytest.mark.parametrize(
     ("foro", "comarca"),
-    [("0344", "marilia"), ("0100", "sao_paulo"), ("0020", "sao_paulo")],
+    [
+        ("0344", "marilia"),
+        ("0100", "sao_paulo"),
+        ("0001", "sao_paulo"),
+        ("0002", "sao_paulo"),
+        ("0020", "sao_paulo"),
+        ("0032", "aracatuba"),
+        ("0068", "barueri"),
+        ("0114", "campinas"),
+        ("0405", "osasco"),
+        ("0506", "ribeirao_preto"),
+        ("0529", "santana_de_parnaiba"),
+    ],
 )
 def test_foros_cadastrados(foro: str, comarca: str) -> None:
     assert comarca_do_foro(foro) == comarca
@@ -194,3 +206,11 @@ def test_prazo_foro_central_novembro_2026() -> None:
     assert prazo.inicio == date(2026, 10, 15)
     assert prazo.seguranca == date(2026, 10, 23)
     assert prazo.vencimento == date(2026, 11, 6)
+
+
+def test_toda_comarca_dos_foros_tem_cadastro() -> None:
+    from assistente.fontes import calendarios
+
+    dados = calendarios._ler("tjsp", "comarcas.toml") or {}
+    comarcas = set(dados.get("comarcas", {}))
+    assert set(dados.get("foros", {}).values()) <= comarcas
