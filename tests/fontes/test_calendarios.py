@@ -214,3 +214,47 @@ def test_toda_comarca_dos_foros_tem_cadastro() -> None:
     dados = calendarios._ler("tjsp", "comarcas.toml") or {}
     comarcas = set(dados.get("comarcas", {}))
     assert set(dados.get("foros", {}).values()) <= comarcas
+
+
+@pytest.mark.parametrize(
+    ("foro", "dia"),
+    [
+        ("0068", date(2026, 6, 24)),  # Barueri: São João Batista
+        ("0114", date(2026, 8, 12)),  # Campinas: Dia do Evangélico
+        ("0114", date(2026, 12, 8)),  # Campinas: N. Sra. da Conceição
+        ("0405", date(2026, 2, 19)),  # Osasco: emancipação
+        ("0506", date(2026, 6, 19)),  # Ribeirão Preto: Santa Juliana
+        ("0032", date(2026, 12, 2)),  # Araçatuba: Dia da Cidade
+    ],
+)
+def test_feriado_municipal_sem_expediente(foro: str, dia: date) -> None:
+    assert not carregar_calendario(2026, foro).tem_expediente(dia)
+
+
+def test_feriado_municipal_so_vale_na_propria_comarca() -> None:
+    # 24/06 é feriado em Barueri, não no Foro Central
+    assert carregar_calendario(2026, "0100").tem_expediente(date(2026, 6, 24))
+
+
+def test_marilia_tem_sao_bento_e_aniversario() -> None:
+    cal = carregar_calendario(2026, "0344")
+    descricoes = {
+        e.descricao for d in (date(2026, 4, 4), date(2026, 7, 11)) for e in cal.eventos_em(d)
+    }
+    assert any("Aniversário" in d for d in descricoes)
+    assert any("São Bento" in d for d in descricoes)
+
+
+def test_prazo_barueri_atravessa_sao_joao() -> None:
+    cal = carregar_calendario(2026, "0068")
+    # disponibilizado seg 22/06; publicado ter 23/06; 24/06 feriado; início qui 25/06
+    prazo = calcular_prazo(date(2026, 6, 22), 5, cal)
+    assert prazo.inicio == date(2026, 6, 25)
+    assert prazo.vencimento == date(2026, 7, 1)
+
+
+@pytest.mark.parametrize("foro", ["0344", "0100", "0068", "0114", "0405", "0506", "0032", "0529"])
+def test_calendario_2026_conferido_nas_comarcas_da_carteira(foro: str) -> None:
+    cal = carregar_calendario(2026, foro)
+    assert cal.conferido
+    assert calcular_prazo(date(2026, 11, 3), 5, cal).avisos == ()
