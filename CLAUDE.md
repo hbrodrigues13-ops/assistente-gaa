@@ -4,7 +4,9 @@ Leia este arquivo inteiro antes de qualquer tarefa neste repositório. Ele é a 
 
 ## 1. O que é o projeto
 
-Assistente jurídico pessoal de Henrique Borges Rodrigues (OAB/SP 509.289), advogado do Gomes Altimari Advogados (GAA), Marília/SP. O objetivo é um sistema robusto que lê publicações, entende o processo, propõe estratégia, redige a minuta no padrão do escritório e lança o prazo no Legal One, sempre com aprovação humana antes de qualquer ação externa.
+Sistema interno do Gomes Altimari Advogados (GAA), Marília/SP, conduzido por Henrique Borges Rodrigues (OAB/SP 509.289), para operar a recuperação de crédito do escritório em escala. O sistema recebe carteiras de credores, avalia cada título, investiga o devedor, prepara o ajuizamento, lê as publicações, propõe a estratégia, redige a minuta no padrão do escritório e lança o prazo no Legal One, sempre com aprovação humana antes de qualquer ação externa.
+
+**Modelo de atuação:** o serviço jurídico é prestado pelo GAA, sociedade de advogados, aos seus clientes. A tecnologia é ferramenta interna do escritório. Nada do sistema é oferecido a terceiros como serviço jurídico ou como produto.
 
 Foco: **recuperação de crédito em geral**, em todo o ciclo do crédito inadimplido:
 - pré-judicial: notificação, protesto, negativação e acordo;
@@ -12,7 +14,7 @@ Foco: **recuperação de crédito em geral**, em todo o ciclo do crédito inadim
 - constrição: SISBAJUD, RENAJUD, INFOJUD, CNIB, penhora, IDPJ e fraude à execução;
 - expropriação e satisfação: adjudicação, alienação, leilão judicial, levantamento e acordo.
 
-O agronegócio (CPR, cédulas rurais, notas de leilão de gado) é uma especialidade dentro do foco, não um limite. Credores típicos: empresas, fintechs e SCDs, securitizadoras, locadoras de equipamentos, cooperativas, leiloeiros e pessoas físicas. Não é contencioso de massa: a vantagem está na profundidade da estratégia e nos dados de recuperação.
+O agronegócio (CPR, cédulas rurais, notas de leilão de gado) é uma especialidade dentro do foco, não um limite. Credores típicos: empresas, fintechs e SCDs, securitizadoras, locadoras de equipamentos, cooperativas, leiloeiros e pessoas físicas. **Volume na entrada, profundidade na estratégia.** O sistema processa carteiras inteiras, mas cada crédito recebe análise própria de título, devedor e medida, conforme o playbook. Não é contencioso de massa de petição padronizada: a vantagem está na triagem (o que vale ajuizar), na investigação do devedor e nos dados de recuperação (seção 5.3), que mostram por comarca e perfil de devedor o que efetivamente recupera dinheiro.
 
 O desenvolvimento é feito por fluxos verticais completos. Só se abre o fluxo seguinte quando o anterior atinge as metas da seção 7.
 
@@ -25,8 +27,8 @@ O desenvolvimento é feito por fluxos verticais completos. Só se abre o fluxo s
 5. **Idempotência.** A chave de cada publicação é o identificador da comunicação no DJEN. Reprocessar nunca pode duplicar tarefa, minuta ou mensagem.
 6. **Modo sombra antes de modo ativo.** Todo fluxo novo roda primeiro em paralelo ao trabalho manual, sem lançar nada, apenas comparando resultados. A promoção para ativo é decisão de Henrique.
 7. **Segredos fora do código.** Chaves e senhas ficam em `.env` (fora do Git) ou no Cofre de Credenciais do Windows via `keyring`. A chave `service_role` do Supabase nunca vai para frontend, log ou commit.
-8. **Minimização de dados (LGPD e sigilo profissional).** Envie ao modelo só o necessário para a etapa. Logs não guardam conteúdo integral de peças nem dados pessoais desnecessários. Toda tabela do Supabase com RLS ativo.
-9. **Ferramenta do advogado, nunca advocacia sem advogado.** O sistema apoia o advogado; a decisão jurídica, a estratégia final e a assinatura são sempre de advogado inscrito na OAB (Recomendação CFOAB 001/2024). Nenhuma funcionalidade pode entregar peça ou estratégia diretamente a cliente ou empresa sem passar por advogado.
+8. **Minimização de dados (LGPD e sigilo profissional).** Envie ao modelo só o necessário para a etapa. Logs não guardam conteúdo integral de peças nem dados pessoais desnecessários. Toda tabela do Supabase com RLS ativo. Dado de devedor ou sócio só é consultado e guardado vinculado ao crédito que justificou a consulta (LGPD, art. 7º, VI e § 3º), enquanto durar a cobrança e o prazo prescricional; não se monta cadastro geral de pessoas (decisão 0003).
+9. **Ferramenta do advogado, nunca advocacia sem advogado.** O sistema apoia o advogado; a decisão jurídica, a estratégia final e a assinatura são sempre de advogado inscrito na OAB (Recomendação CFOAB 001/2024). Nenhuma funcionalidade pode entregar peça ou estratégia diretamente a cliente ou empresa sem passar por advogado. Em lote, a escala não dispensa revisão: o advogado aprova cada peça ou uma amostra definida no playbook, nunca o lote às cegas.
 10. **Registro de supervisão.** Toda minuta guarda trilha auditável: versão gerada, quem revisou, o que foi alterado, quem aprovou, data e hora. Sem esse registro, a minuta não pode ser marcada como aprovada.
 
 ## 3. Stack
@@ -152,5 +154,31 @@ Escopo do Fluxo 1: qualquer processo de recuperação de crédito (execução, c
 - **Fase 1:** domínio de prazos e calendário com testes; coleta do DJEN; classificação; modo sombra.
 - **Fase 2:** contexto (Legal One, pasta GAA, DataJud, leitura de autos no e-SAJ e demais tribunais), cruzamento de devedor contumaz e lançamento de tarefa com aprovação e registro de supervisão.
 - **Fase 3:** playbooks, estratégia, cálculo e minuta no .docx-modelo; verificação de citações; tabela de resultados.
-- **Fase 4:** canal WhatsApp oficial e alertas.
-- **Fase 5:** novos fluxos: cobrança pré-judicial (notificação, protesto, negativação, proposta de acordo), distribuição de novas execuções a partir do título, análise de risco do devedor antes da concessão do crédito ou do leilão, e crédito rural.
+- **Fase 4:** Fluxo 2, entrada de carteira (seção 10): leitura do título, triagem, investigação do devedor e ajuizamento em lote. Só abre quando o Fluxo 1 atingir as metas da seção 7.
+- **Fase 5:** cobrança pré-judicial (notificação, protesto, negativação, proposta de acordo), análise de risco do devedor antes da concessão do crédito ou do leilão, e crédito rural.
+- **Fase 6:** canal WhatsApp oficial e alertas.
+
+## 10. Fluxo 2: entrada de carteira (desenho; abre na Fase 4)
+
+Objetivo: receber a carteira de um credor cliente do GAA e transformar cada crédito em decisão fundamentada (ajuizar, cobrar extrajudicialmente, aguardar ou descartar) e, quando for o caso, em petição inicial pronta para revisão.
+
+### 10.1 Etapas
+
+1. **Recebimento:** a carteira chega em lote (planilha e documentos). Cada crédito recebe identificador próprio, que é a chave de idempotência do fluxo. Reprocessar a carteira nunca duplica análise nem peça.
+2. **Leitura do título:** extrair partes, valor, vencimento, garantias e encargos de cada título (CCB, nota promissória, duplicata, cheque, CPR, cédula rural, contrato com alienação fiduciária, nota de leilão). Todo dado extraído aponta para o documento e a página de origem (princípio 4).
+3. **Triagem (código determinístico onde houver regra):**
+   - exequibilidade do título (CPC, art. 784, e lei específica do título);
+   - prescrição, calculada por função pura e testada, como o prazo processual;
+   - atualização do débito pelo padrão da seção 5.1, etapa 5;
+   - via cabível: execução, monitória, busca e apreensão ou cobrança.
+4. **Investigação do devedor:** dados públicos (dados-publicos-mcp: Receita/CNPJ, sócios, PGFN, diários oficiais), outras execuções na base do GAA (devedor contumaz) e DataJud. Respeitar o princípio 8.
+5. **Recomendação por crédito:** ajuizar, notificar, protestar, aguardar ou descartar, com fundamento e estimativa de recuperação baseada na tabela de resultados (seção 5.3), quando houver dados suficientes.
+6. **Tabela de validação:** a carteira volta ao advogado como tabela, com uma linha por crédito, a recomendação e a coluna do cliente. Nada avança sem aprovação registrada (princípios 2 e 10).
+7. **Peças em lote:** iniciais no padrão da seção 6, a partir do .docx-modelo, com verificação de citações. A revisão segue o princípio 9 para lote.
+8. **Distribuição e acompanhamento:** depois do protocolo, o processo entra no Fluxo 1 (publicações, prazos, medidas) e na tabela de resultados.
+
+### 10.2 Metas antes de abrir
+
+- Fluxo 1 em modo ativo, com prazo correto em 100% da base de teste.
+- Base de teste de carteira com títulos reais anonimizados e a decisão que Henrique efetivamente tomou em cada um.
+- Função de prescrição coberta por testes, com os prazos de cada tipo de título conferidos na fonte oficial.
