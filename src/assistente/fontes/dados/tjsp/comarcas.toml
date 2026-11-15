@@ -1,13 +1,42 @@
 # Foro de origem do número CNJ (segmento OOOO, justiça 8, tribunal 26) -> comarca.
-# Acrescentar foros conforme os processos aparecerem, sempre com fonte.
+# Fonte: TJSP, "Relação das unidades de origem do processo" (Res. CNJ 65/2008),
+# https://www.tjsp.jus.br/Download/SPI/Downloads/CodigosOrigemDescricoesUnidadesForuns.pdf
+# baixado em 15/11/2026, sha256 27f91be7f6497df5a5fa23f44b23e0b0e7919696ef1c54dbcda5d84c04ff50d9.
+# Acrescentar foros conforme os processos aparecerem, conferindo nessa lista.
 # Enquanto feriados_municipais_conferidos = false, todo prazo da comarca sai com aviso.
 
 [foros]
-"0344" = "marilia"  # Marília, sede do GAA
-"0100" = "sao_paulo"  # Foro Central Cível (fórum de jurimetria da ABJ)
-"0020" = "sao_paulo"  # Foro Regional XII, Nossa Senhora do Ó (autos da execução FB Máquinas)
+"0001" = "sao_paulo"  # Foro Regional I - Santana
+"0002" = "sao_paulo"  # Foro Regional II - Santo Amaro
+"0020" = "sao_paulo"  # Foro Regional XII - Nossa Senhora do Ó
+"0032" = "aracatuba"  # Foro de Araçatuba
+"0068" = "barueri"  # Foro de Barueri
+"0100" = "sao_paulo"  # Foro Central Cível
+"0114" = "campinas"  # Foro de Campinas
+"0344" = "marilia"  # Foro de Marília
+"0405" = "osasco"  # Foro de Osasco
+"0506" = "ribeirao_preto"  # Foro de Ribeirão Preto
+"0529" = "santana_de_parnaiba"  # Foro de Santana de Parnaíba
+
+[comarcas.aracatuba]
+feriados_municipais_conferidos = false
+
+[comarcas.barueri]
+feriados_municipais_conferidos = false
+
+[comarcas.campinas]
+feriados_municipais_conferidos = false
 
 [comarcas.marilia]
+feriados_municipais_conferidos = false
+
+[comarcas.osasco]
+feriados_municipais_conferidos = false
+
+[comarcas.ribeirao_preto]
+feriados_municipais_conferidos = false
+
+[comarcas.santana_de_parnaiba]
 feriados_municipais_conferidos = false
 
 [comarcas.sao_paulo]
