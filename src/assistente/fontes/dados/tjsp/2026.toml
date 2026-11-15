@@ -69,7 +69,7 @@ fonte = "Prov. CSM 2.813/2025, art. 1º (DJE 25/11/2025, p. 2)"
 inicio = 2026-10-30
 tipo = "suspensao_expediente"
 descricao = "Dia do Funcionário Público, transferido de 28/10 (que tem expediente)"
-fonte = "Prov. CSM 2.845/2026 (A CONFERIR no texto oficial; citado em nota do Prov. CSM 2.813/2025)"
+fonte = "Prov. CSM 2.845/2026, confirmado na relação oficial de feriados do TJSP (consulta em 15/11/2026)"
 
 [[eventos]]
 inicio = 2026-12-07
@@ -90,18 +90,97 @@ tipo = "suspensao_expediente"
 descricao = "Recesso forense, sem expediente"
 fonte = "Prov. CSM 2.813/2025, art. 1º, § 1º (DJE 25/11/2025, p. 2)"
 
-# Marília
+# Feriados municipais por comarca, conforme a relação oficial do TJSP.
+# Suspensões de prazo restritas a varas específicas (ex.: implantação do eproc)
+# não entram aqui: aplicá-las à comarca inteira daria prazo maior que o real.
 
 [[eventos]]
 inicio = 2026-04-04
 tipo = "feriado"
-descricao = "Aniversário de Marília (sábado em 2026)"
-fonte = "A CONFERIR: lei municipal de Marília"
+descricao = "Aniversário da cidade de Marília (sábado em 2026)"
+fonte = "TJSP, Expediente Forense, consulta por município (www.tjsp.jus.br/CanaisComunicacao/Feriados/ExpedienteForense), 15/11/2026"
 comarca = "marilia"
+
+[[eventos]]
+inicio = 2026-07-11
+tipo = "feriado"
+descricao = "São Bento, padroeiro de Marília (sábado em 2026)"
+fonte = "TJSP, Expediente Forense, consulta por município (www.tjsp.jus.br/CanaisComunicacao/Feriados/ExpedienteForense), 15/11/2026"
+comarca = "marilia"
+
+[[eventos]]
+inicio = 2026-01-25
+tipo = "feriado"
+descricao = "Fundação da cidade de São Paulo (domingo em 2026)"
+fonte = "TJSP, Expediente Forense, consulta por município (www.tjsp.jus.br/CanaisComunicacao/Feriados/ExpedienteForense), 15/11/2026"
+comarca = "sao_paulo"
+
+[[eventos]]
+inicio = 2026-06-24
+tipo = "feriado"
+descricao = "São João Batista"
+fonte = "TJSP, Expediente Forense, consulta por município (www.tjsp.jus.br/CanaisComunicacao/Feriados/ExpedienteForense), 15/11/2026"
+comarca = "barueri"
+
+[[eventos]]
+inicio = 2026-08-12
+tipo = "feriado"
+descricao = "Dia do Evangélico (incluído na 16ª sessão virtual do CSM, 10/04/2026)"
+fonte = "TJSP, Expediente Forense, consulta por município (www.tjsp.jus.br/CanaisComunicacao/Feriados/ExpedienteForense), 15/11/2026"
+comarca = "campinas"
 
 [[eventos]]
 inicio = 2026-12-08
 tipo = "feriado"
-descricao = "Nossa Senhora da Imaculada Conceição"
-fonte = "A CONFERIR: lei municipal de Marília (instituído em 1979, segundo a imprensa local)"
-comarca = "marilia"
+descricao = "Nossa Senhora da Conceição, padroeira de Campinas"
+fonte = "TJSP, Expediente Forense, consulta por município (www.tjsp.jus.br/CanaisComunicacao/Feriados/ExpedienteForense), 15/11/2026"
+comarca = "campinas"
+
+[[eventos]]
+inicio = 2026-02-19
+tipo = "feriado"
+descricao = "Emancipação político-administrativa de Osasco"
+fonte = "TJSP, Expediente Forense, consulta por município (www.tjsp.jus.br/CanaisComunicacao/Feriados/ExpedienteForense), 15/11/2026"
+comarca = "osasco"
+
+[[eventos]]
+inicio = 2026-06-13
+tipo = "feriado"
+descricao = "Santo Antônio, padroeiro de Osasco (sábado em 2026)"
+fonte = "TJSP, Expediente Forense, consulta por município (www.tjsp.jus.br/CanaisComunicacao/Feriados/ExpedienteForense), 15/11/2026"
+comarca = "osasco"
+
+[[eventos]]
+inicio = 2026-01-20
+tipo = "feriado"
+descricao = "São Sebastião"
+fonte = "TJSP, Expediente Forense, consulta por município (www.tjsp.jus.br/CanaisComunicacao/Feriados/ExpedienteForense), 15/11/2026"
+comarca = "ribeirao_preto"
+
+[[eventos]]
+inicio = 2026-06-19
+tipo = "feriado"
+descricao = "Santa Juliana de Falconieri"
+fonte = "TJSP, Expediente Forense, consulta por município (www.tjsp.jus.br/CanaisComunicacao/Feriados/ExpedienteForense), 15/11/2026"
+comarca = "ribeirao_preto"
+
+[[eventos]]
+inicio = 2026-12-02
+tipo = "feriado"
+descricao = "Dia da cidade de Araçatuba"
+fonte = "TJSP, Expediente Forense, consulta por município (www.tjsp.jus.br/CanaisComunicacao/Feriados/ExpedienteForense), 15/11/2026"
+comarca = "aracatuba"
+
+[[eventos]]
+inicio = 2026-07-26
+tipo = "feriado"
+descricao = "Santana (domingo em 2026)"
+fonte = "TJSP, Expediente Forense, consulta por município (www.tjsp.jus.br/CanaisComunicacao/Feriados/ExpedienteForense), 15/11/2026"
+comarca = "santana_de_parnaiba"
+
+[[eventos]]
+inicio = 2026-11-14
+tipo = "feriado"
+descricao = "São Josafá (sábado em 2026)"
+fonte = "TJSP, Expediente Forense, consulta por município (www.tjsp.jus.br/CanaisComunicacao/Feriados/ExpedienteForense), 15/11/2026"
+comarca = "santana_de_parnaiba"
