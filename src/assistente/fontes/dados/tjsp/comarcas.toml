@@ -21,25 +21,33 @@
 "0529" = "santana_de_parnaiba"  # Foro de Santana de Parnaíba
 
 [comarcas.aracatuba]
+municipio = "Araçatuba"  # nome usado na consulta de feriados do TJSP
 feriados_municipais_conferidos = true
 
 [comarcas.barueri]
+municipio = "Barueri"  # nome usado na consulta de feriados do TJSP
 feriados_municipais_conferidos = true
 
 [comarcas.campinas]
+municipio = "Campinas"  # nome usado na consulta de feriados do TJSP
 feriados_municipais_conferidos = true
 
 [comarcas.marilia]
+municipio = "Marília"  # nome usado na consulta de feriados do TJSP
 feriados_municipais_conferidos = true
 
 [comarcas.osasco]
+municipio = "Osasco"  # nome usado na consulta de feriados do TJSP
 feriados_municipais_conferidos = true
 
 [comarcas.ribeirao_preto]
+municipio = "Ribeirão Preto"  # nome usado na consulta de feriados do TJSP
 feriados_municipais_conferidos = true
 
 [comarcas.santana_de_parnaiba]
+municipio = "Santana de Parnaíba"  # nome usado na consulta de feriados do TJSP
 feriados_municipais_conferidos = true
 
 [comarcas.sao_paulo]
+municipio = "São Paulo"  # nome usado na consulta de feriados do TJSP
 feriados_municipais_conferidos = true

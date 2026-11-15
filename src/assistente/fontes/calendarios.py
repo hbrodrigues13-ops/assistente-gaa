@@ -29,6 +29,11 @@ def _ler(tribunal: str, arquivo: str) -> dict[str, Any] | None:
     return tomllib.loads(caminho.read_text(encoding="utf-8"))
 
 
+def ler_dados(tribunal: str, arquivo: str) -> dict[str, Any] | None:
+    """Lê um arquivo de dados versionado do tribunal (somente leitura)."""
+    return _ler(tribunal, arquivo)
+
+
 def _feriados_municipais_conferidos(comarca: str, tribunal: str) -> bool:
     dados = _ler(tribunal, "comarcas.toml") or {}
     return bool(dados.get("comarcas", {}).get(comarca, {}).get("feriados_municipais_conferidos"))
