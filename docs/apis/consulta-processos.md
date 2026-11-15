@@ -55,6 +55,8 @@ DJEN (por OAB, por data)
 
 Limites relatados: no máximo 10.000 resultados por pesquisa; em resposta 429, aguardar 1 minuto antes de tentar de novo. Não rodar consultas em paralelo nem trocar de IP para contornar limite.
 
+**Bloqueio fora do Brasil (testado em 13/11/2026):** a API respondeu 403 do CloudFront com a mensagem de que a distribuição bloqueia acesso a partir do país de origem. A sessão de desenvolvimento na nuvem roda fora do Brasil. Por isso a coleta do DJEN roda no computador de Henrique ou em servidor no Brasil, nunca na nuvem de desenvolvimento. Não se usa VPN ou proxy para contornar o bloqueio.
+
 ### OABs monitoradas (CLAUDE.md, seção 5)
 
 | Advogado | `numeroOab` | `ufOab` |
@@ -257,7 +259,7 @@ DATAJUD_API_KEY=
 DJEN_OABS=509289/SP,177936/SP
 ```
 
-Rede: a sessão de desenvolvimento na nuvem bloqueia hosts que não estejam liberados. Antes da primeira chamada real será preciso liberar `comunicaapi.pje.jus.br` e `api-publica.datajud.cnj.jus.br`. No computador de Henrique não há esse bloqueio.
+Rede: a sessão de desenvolvimento na nuvem só acessa hosts liberados. Em 13/11/2026 estavam liberados `comunicaapi.pje.jus.br`, `api-publica.datajud.cnj.jus.br`, `datajud-wiki.cnj.jus.br` e `esaj.tjsp.jus.br`; `www.tjsp.jus.br` não. Mesmo liberado, o DJEN recusa acesso de fora do Brasil (seção 2). No computador de Henrique não há esses bloqueios.
 
 ## 7. Pendências
 
