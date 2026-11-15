@@ -3,12 +3,14 @@
 # Os feriados nacionais, a terça-feira de Carnaval e a Sexta-feira Santa
 # vêm do código (Lei 1.408/1951, art. 5º) e não se repetem aqui.
 #
-# conferido = false até Henrique confirmar cada data. Enquanto false, todo
+# conferido = true: datas conferidas por Henrique Borges Rodrigues em 15/11/2026,
+# com base no Prov. CSM 2.813/2025 e na relação oficial de feriados do TJSP.
+# Se voltar a false, todo
 # prazo calculado com esta tabela sai com aviso.
 # Tipos: feriado, suspensao_expediente, suspensao_prazo,
 # expediente_irregular, indisponibilidade.
 
-conferido = false
+conferido = true
 
 [[eventos]]
 inicio = 2026-01-01

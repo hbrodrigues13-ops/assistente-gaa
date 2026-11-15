@@ -4,6 +4,8 @@
 # baixado em 15/11/2026, sha256 27f91be7f6497df5a5fa23f44b23e0b0e7919696ef1c54dbcda5d84c04ff50d9.
 # Acrescentar foros conforme os processos aparecerem, conferindo nessa lista.
 # Enquanto feriados_municipais_conferidos = false, todo prazo da comarca sai com aviso.
+# Comarcas marcadas true: conferidas por Henrique Borges Rodrigues em 15/11/2026
+# (relação oficial de feriados do TJSP, consulta de 15/11/2026).
 
 [foros]
 "0001" = "sao_paulo"  # Foro Regional I - Santana
@@ -19,25 +21,25 @@
 "0529" = "santana_de_parnaiba"  # Foro de Santana de Parnaíba
 
 [comarcas.aracatuba]
-feriados_municipais_conferidos = false
+feriados_municipais_conferidos = true
 
 [comarcas.barueri]
-feriados_municipais_conferidos = false
+feriados_municipais_conferidos = true
 
 [comarcas.campinas]
-feriados_municipais_conferidos = false
+feriados_municipais_conferidos = true
 
 [comarcas.marilia]
-feriados_municipais_conferidos = false
+feriados_municipais_conferidos = true
 
 [comarcas.osasco]
-feriados_municipais_conferidos = false
+feriados_municipais_conferidos = true
 
 [comarcas.ribeirao_preto]
-feriados_municipais_conferidos = false
+feriados_municipais_conferidos = true
 
 [comarcas.santana_de_parnaiba]
-feriados_municipais_conferidos = false
+feriados_municipais_conferidos = true
 
 [comarcas.sao_paulo]
-feriados_municipais_conferidos = false
+feriados_municipais_conferidos = true

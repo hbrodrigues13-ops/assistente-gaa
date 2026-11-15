@@ -251,3 +251,10 @@ def test_prazo_barueri_atravessa_sao_joao() -> None:
     prazo = calcular_prazo(date(2026, 6, 22), 5, cal)
     assert prazo.inicio == date(2026, 6, 25)
     assert prazo.vencimento == date(2026, 7, 1)
+
+
+@pytest.mark.parametrize("foro", ["0344", "0100", "0068", "0114", "0405", "0506", "0032", "0529"])
+def test_calendario_2026_conferido_nas_comarcas_da_carteira(foro: str) -> None:
+    cal = carregar_calendario(2026, foro)
+    assert cal.conferido
+    assert calcular_prazo(date(2026, 11, 3), 5, cal).avisos == ()
