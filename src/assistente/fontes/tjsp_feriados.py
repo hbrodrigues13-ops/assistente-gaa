@@ -19,14 +19,13 @@ import httpx
 
 from assistente.dominio.calendario import SEM_EXPEDIENTE, Calendario, em_recesso_art220
 from assistente.fontes.calendarios import ler_dados
+from assistente.fontes.erros import FonteIndisponivel
+
+__all__ = ["FonteIndisponivel"]
 
 URL_BASE = "https://www.tjsp.jus.br/CanaisComunicacao/Feriados"
 MARCA_GERAL = "PROVIMENTO"
 MARCA_COMUNICADO = "COMUNICADO"
-
-
-class FonteIndisponivel(RuntimeError):
-    """A consulta do TJSP falhou mesmo depois das novas tentativas."""
 
 
 class ConsultaTjsp(Protocol):
