@@ -1,7 +1,7 @@
 """Armazenamento local das comunicações e das coletas (SQLite, só biblioteca padrão).
 
-O arquivo fica fora do repositório (dados de clientes não vão para o Git).
-Na migração para a nuvem, este adaptador é trocado pelo do Supabase.
+Usado nos testes e como alternativa sem rede; em produção a coleta grava no Supabase
+(decisão 0005). O arquivo fica sempre fora do repositório.
 """
 
 import json

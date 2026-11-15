@@ -4,26 +4,36 @@ Uso (no computador de Henrique, no Brasil):
     uv run --env-file .env python -m assistente.fluxos.coleta_djen
     uv run --env-file .env python -m assistente.fluxos.coleta_djen --diagnostico
 
-Variáveis do .env: DJEN_OABS (ex.: 509289/SP,177936/SP) e ASSISTENTE_DADOS
-(pasta do banco local; padrão: ~/assistente-gaa-dados). Sai com código 1 se
-alguma OAB falhar ou a coleta estiver atrasada: nada falha em silêncio.
+Variáveis do .env: DJEN_OABS (ex.: 509289/SP,177936/SP), SUPABASE_URL e
+SUPABASE_SERVICE_ROLE_KEY. Grava no Supabase (projeto assistente-gaa, São
+Paulo); nada de cliente fica no computador. Sai com código 1 se alguma OAB
+falhar ou a coleta estiver atrasada: nada falha em silêncio.
 """
 
 import os
 import sys
 from dataclasses import dataclass, field
-from datetime import datetime
-from pathlib import Path
+from datetime import date, datetime
 from typing import Any, Protocol
 
-from assistente.adaptadores.armazenamento_sqlite import ArmazenamentoSqlite
-from assistente.dominio.comunicacao import coleta_atrasada, intervalo_de_coleta
+from assistente.adaptadores.armazenamento_supabase import ArmazenamentoSupabase
+from assistente.dominio.comunicacao import Comunicacao, coleta_atrasada, intervalo_de_coleta
 from assistente.fontes.djen import ClienteDjen, FormatoInesperado, ler_comunicacao
 from assistente.fontes.erros import FonteIndisponivel
 
 
 class FonteDjen(Protocol):
     def comunicacoes(self, oab: str, uf: str, inicio: Any, fim: Any) -> list[dict[str, Any]]: ...
+
+
+class Armazenamento(Protocol):
+    def salvar(self, oab: str, comunicacoes: list[Comunicacao]) -> tuple[int, int]: ...
+
+    def registrar_coleta(
+        self, oab: str, inicio: date, fim: date, executada_em: datetime, erro: str | None
+    ) -> None: ...
+
+    def ultima_coleta_ok(self, oab: str) -> date | None: ...
 
 
 @dataclass
@@ -57,7 +67,7 @@ def ler_oabs(texto: str) -> list[tuple[str, str]]:
 def coletar(
     oabs: list[tuple[str, str]],
     djen: FonteDjen,
-    banco: ArmazenamentoSqlite,
+    banco: Armazenamento,
     agora: datetime,
 ) -> ResultadoColeta:
     resultado = ResultadoColeta()
@@ -110,9 +120,17 @@ def main() -> int:
         numero, uf = oabs[0]
         print(resumo_diagnostico(ClienteDjen().comunicacoes(numero, uf, hoje - timedelta(7), hoje)))
         return 0
-    pasta = Path(os.environ.get("ASSISTENTE_DADOS") or Path.home() / "assistente-gaa-dados")
-    banco = ArmazenamentoSqlite(pasta / "assistente.db")
-    resultado = coletar(oabs, ClienteDjen(), banco, datetime.now())
+    url = os.environ.get("SUPABASE_URL", "")
+    chave = os.environ.get("SUPABASE_SERVICE_ROLE_KEY", "")
+    if not url or not chave:
+        print("Defina SUPABASE_URL e SUPABASE_SERVICE_ROLE_KEY no .env.")
+        return 2
+    banco = ArmazenamentoSupabase(url, chave)
+    try:
+        resultado = coletar(oabs, ClienteDjen(), banco, datetime.now())
+    except FonteIndisponivel as erro:  # Supabase fora do ar: nada gravado, nada perdido
+        print(f"FALHA: {erro}")
+        return 1
     print(resultado.texto())
     return 0 if resultado.ok else 1
 

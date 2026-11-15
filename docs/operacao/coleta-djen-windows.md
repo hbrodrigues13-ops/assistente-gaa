@@ -1,6 +1,6 @@
 # Coleta do DJEN no computador de Henrique (Windows)
 
-A API do DJEN só aceita acesso a partir do Brasil, por isso a coleta roda neste computador (decisão de 15/11/2026). Fase atual: **modo sombra**. A coleta só grava as publicações num banco local; nada é lançado no Legal One e o controle manual de prazos continua valendo.
+A API do DJEN só aceita acesso a partir do Brasil, por isso a coleta roda neste computador (decisão de 15/11/2026). As publicações são gravadas no Supabase (projeto `assistente-gaa`, região São Paulo); nenhum dado de cliente fica no computador. Fase atual: **modo sombra**: nada é lançado no Legal One e o controle manual de prazos continua valendo.
 
 Tempo estimado: 15 minutos, uma vez só.
 
@@ -21,7 +21,12 @@ Feche e abra o PowerShell de novo.
 
 ## 3. Criar o .env
 
-Na pasta `C:\assistente-gaa`, copie o arquivo `.env.example` e renomeie a cópia para `.env`. Para a coleta, os valores que já vêm preenchidos bastam (`DJEN_OABS` e `PYTHONUTF8`). O `.env` nunca vai para o GitHub.
+Na pasta `C:\assistente-gaa`, copie o arquivo `.env.example` e renomeie a cópia para `.env`. Abra o `.env` no Bloco de Notas e preencha:
+
+- `SUPABASE_URL=https://aupstyfnbdthhkjxufqx.supabase.co`
+- `SUPABASE_SERVICE_ROLE_KEY=` a chave secreta do projeto: no painel do Supabase, projeto **assistente-gaa**, *Project Settings > API Keys*, chave **secret** (começa com `sb_secret_`) ou, na aba de chaves legadas, a **service_role**.
+
+`DJEN_OABS` e `PYTHONUTF8` já vêm preenchidos. A chave secreta dá acesso total ao banco: ela fica só neste arquivo, que nunca vai para o GitHub. Não mande a chave por chat ou e-mail.
 
 ## 4. Teste de diagnóstico
 
@@ -41,7 +46,7 @@ O resultado mostra quantas comunicações o DJEN devolveu nos últimos 7 dias e 
 uv run --env-file .env python -m assistente.fluxos.coleta_djen
 ```
 
-Saída esperada: uma linha por OAB, com o período, as comunicações novas e as repetidas. O banco fica em `C:\Users\<seu usuário>\assistente-gaa-dados\assistente.db`, fora do repositório.
+Saída esperada: uma linha por OAB, com o período, as comunicações novas e as repetidas, já gravadas no Supabase.
 
 ## 6. Agendar a coleta diária
 
@@ -57,7 +62,7 @@ Saída esperada: uma linha por OAB, com o período, as comunicações novas e as
 5. **Condições:** marque "Despertar o computador para executar esta tarefa".
 6. **Configurações:** marque "Executar a tarefa o mais cedo possível após uma inicialização agendada ser perdida".
 
-Faça a etapa 5 (primeira coleta) antes de agendar: ela cria a pasta do log.
+Antes de agendar, crie a pasta do log: `mkdir $env:USERPROFILE\assistente-gaa-dados` no PowerShell. O log só guarda contagens e mensagens de erro, sem conteúdo de publicação.
 
 ## Como acompanhar
 

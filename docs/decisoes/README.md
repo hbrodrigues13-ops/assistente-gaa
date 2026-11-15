@@ -6,6 +6,7 @@
 | 0002 | pydatajud para número CNJ e DataJud | aprovada |
 | 0003 | dados-publicos-mcp para investigação do devedor | aprovada |
 | 0004 | Advocacia Aberta para jurisprudência | aprovada |
+| 0005 | Coleta do DJEN no computador de Henrique, gravação no Supabase | aprovada |
 
 ## Avaliados e descartados (07/11/2026)
 
