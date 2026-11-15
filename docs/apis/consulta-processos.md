@@ -69,6 +69,7 @@ import httpx
 
 URL = "https://comunicaapi.pje.jus.br/api/v1/comunicacao"
 
+
 def buscar_comunicacoes(oab: str, uf: str, inicio: str, fim: str, pagina: int = 1) -> dict:
     params = {
         "numeroOab": oab,
@@ -172,10 +173,10 @@ class Polo(StrEnum):
 
 
 class Classificacao(BaseModel):
-    classe: str          # execução, cumprimento de sentença, monitória...
+    classe: str  # execução, cumprimento de sentença, monitória...
     polo_cliente: Polo
-    ato: str             # citação negativa, bloqueio infrutífero, embargos...
-    prazo_legal_dias: int | None   # sugestão; a contagem é sempre do domínio
+    ato: str  # citação negativa, bloqueio infrutífero, embargos...
+    prazo_legal_dias: int | None  # sugestão; a contagem é sempre do domínio
     justificativa: str
 
 
