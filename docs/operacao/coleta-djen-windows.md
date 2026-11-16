@@ -72,3 +72,19 @@ Antes de agendar, crie a pasta do log: `mkdir $env:USERPROFILE\assistente-gaa-da
 - Computador desligado não perde publicação: a coleta seguinte busca todo o período desde a última coleta bem-sucedida, e as repetidas são ignoradas.
 
 O aviso ativo (e-mail ou WhatsApp) entra em fase posterior. Até lá, o acompanhamento é pelo log.
+
+## 7. Relatório do modo sombra
+
+Depois da coleta, o relatório classifica as publicações cíveis e calcula os prazos. Trabalhistas, canceladas e listas de distribuição são descartadas antes, sem custo.
+
+1. Crie uma chave da API em **console.anthropic.com** (*API Keys > Create Key*) e coloque créditos na conta (*Billing*).
+2. No `.env`, preencha `ANTHROPIC_API_KEY=` com a chave. Como a chave do Supabase, ela fica só neste arquivo.
+3. Rode:
+
+```powershell
+uv run --env-file .env python -m assistente.fluxos.modo_sombra
+```
+
+O relatório lista, por data de segurança, cada publicação com processo, ato, polo do cliente, dias de prazo, segurança, vencimento e avisos. Ele também fica gravado no Supabase (tabela `analises`). **Compare com o que você lançou no Legal One**: cada diferença é um caso para a base de teste.
+
+Por padrão, analisa os últimos 7 dias. Para outro período: `--desde AAAA-MM-DD`. Publicação já analisada não é analisada de novo.

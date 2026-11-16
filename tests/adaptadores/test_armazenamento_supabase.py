@@ -102,3 +102,32 @@ def test_erro_do_supabase_e_falha_explicita_sem_mostrar_a_chave() -> None:
         banco.ultima_coleta_ok("509289/SP")
     assert "401" in str(erro.value)
     assert "sb_secret_nao_vazar" not in str(erro.value)
+
+
+def test_le_comunicacoes_desde_uma_data_e_ids_ja_analisados() -> None:
+    vistas: list[httpx.Request] = []
+
+    def responder(req: httpx.Request) -> httpx.Response:
+        vistas.append(req)
+        tabela = req.url.path.rsplit("/", 1)[-1]
+        if tabela == "comunicacoes":
+            return httpx.Response(200, json=[{"id": "1", "bruto": {"id": 1}}])
+        if tabela == "analises" and req.method == "GET":
+            return httpx.Response(200, json=[{"comunicacao_id": "1"}])
+        return httpx.Response(201)
+
+    banco = ArmazenamentoSupabase(
+        "https://exemplo.supabase.co",
+        "sb_secret_x",
+        httpx.Client(transport=httpx.MockTransport(responder)),
+    )
+    assert banco.comunicacoes_desde(date(2026, 11, 9)) == [{"id": "1", "bruto": {"id": 1}}]
+    assert vistas[0].url.params["disponibilizacao"] == "gte.2026-11-09"
+    assert banco.ids_analisados(["1", "2"]) == {"1"}
+    assert vistas[1].url.params["comunicacao_id"] == "in.(1,2)"
+    assert banco.ids_analisados([]) == set()
+
+    banco.salvar_analise({"comunicacao_id": "2", "ato": "outro"})
+    assert vistas[-1].method == "POST"
+    assert "resolution=merge-duplicates" in vistas[-1].headers["prefer"]
+    assert json.loads(vistas[-1].content) == {"comunicacao_id": "2", "ato": "outro"}
