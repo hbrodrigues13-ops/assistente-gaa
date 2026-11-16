@@ -3,8 +3,11 @@
 Endpoint e parâmetros: docs/apis/consulta-processos.md. A API recusa acesso
 de fora do Brasil (403 do CloudFront): a coleta roda no computador de Henrique.
 
-Os nomes dos campos da resposta ainda não foram conferidos no Swagger oficial.
-O leitor aceita as variações conhecidas e, sem identificador ou data de
+Os nomes dos campos da resposta foram conferidos na API real em 15/11/2026
+(--diagnostico com a OAB 509289/SP) e estão fixados em
+tests/fontes/dados/djen_resposta.json: id (inteiro), data_disponibilizacao
+(AAAA-MM-DD), numero_processo (20 dígitos, sem máscara), siglaTribunal e texto.
+O leitor ainda aceita variações de nome e, sem identificador ou data de
 disponibilização, para com FormatoInesperado em vez de seguir em silêncio.
 """
 

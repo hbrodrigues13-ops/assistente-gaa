@@ -1,6 +1,8 @@
 """Testes do cliente do DJEN (sem rede, com httpx.MockTransport)."""
 
+import json
 from datetime import date
+from pathlib import Path
 from typing import Any
 
 import httpx
@@ -42,6 +44,92 @@ def test_le_variacoes_de_nome_e_data_brasileira() -> None:
     c = ler_comunicacao(bruto)
     assert c.disponibilizacao == date(2026, 11, 12)
     assert c.numero_processo == "1234567-23.2025.8.26.0344"
+
+
+# Formato real da resposta, conferido no --diagnostico de 15/11/2026 (OAB 509289/SP).
+# A fixture é sintética: só os nomes dos campos e os tipos vêm da API.
+RESPOSTA_REAL = Path(__file__).parent / "dados" / "djen_resposta.json"
+
+CAMPOS_REAIS: dict[str, tuple[type, ...]] = {
+    "ativo": (bool,),
+    "codigoClasse": (str,),
+    "data_cancelamento": (type(None), str),
+    "data_disponibilizacao": (str,),
+    "datadisponibilizacao": (str,),
+    "destinatarioadvogados": (list,),
+    "destinatarios": (list,),
+    "hash": (str,),
+    "id": (int,),
+    "idOrgao": (int,),
+    "link": (type(None), str),
+    "meio": (str,),
+    "meiocompleto": (str,),
+    "motivo_cancelamento": (type(None), str),
+    "nomeClasse": (str,),
+    "nomeOrgao": (str,),
+    "numeroComunicacao": (int,),
+    "numero_processo": (str,),
+    "numeroprocessocommascara": (str,),
+    "siglaTribunal": (str,),
+    "status": (str,),
+    "texto": (str,),
+    "tipoComunicacao": (str,),
+    "tipoDocumento": (str,),
+}
+CAMPOS_DESTINATARIO = {"comunicacao_id", "nome", "polo"}
+CAMPOS_DESTINATARIO_ADVOGADO = {
+    "id",
+    "comunicacao_id",
+    "advogado_id",
+    "advogado",
+    "created_at",
+    "updated_at",
+}
+CAMPOS_ADVOGADO = {"id", "nome", "numero_oab", "uf_oab"}
+
+
+def _resposta_real() -> dict[str, Any]:
+    corpo: dict[str, Any] = json.loads(RESPOSTA_REAL.read_text(encoding="utf-8"))
+    return corpo
+
+
+def test_fixture_tem_os_campos_e_tipos_do_formato_real() -> None:
+    corpo = _resposta_real()
+    assert set(corpo) == {"status", "message", "count", "items"}
+    for item in corpo["items"]:
+        assert set(item) == set(CAMPOS_REAIS)
+        for campo, tipos in CAMPOS_REAIS.items():
+            assert isinstance(item[campo], tipos), campo
+        for destinatario in item["destinatarios"]:
+            assert set(destinatario) == CAMPOS_DESTINATARIO
+        for intimado in item["destinatarioadvogados"]:
+            assert set(intimado) == CAMPOS_DESTINATARIO_ADVOGADO
+            assert set(intimado["advogado"]) == CAMPOS_ADVOGADO
+
+
+def test_le_comunicacao_no_formato_real() -> None:
+    bruto = _resposta_real()["items"][0]
+    c = ler_comunicacao(bruto)
+    assert c.id == "900000001"  # id vem como inteiro; a chave de idempotência é texto
+    assert c.disponibilizacao == date(2026, 11, 13)  # data_disponibilizacao (ISO) tem preferência
+    assert c.numero_processo == "12345672320258260344"  # numero_processo vem sem máscara
+    assert c.tribunal == "TJSP"
+    assert c.texto.startswith("Texto fictício")
+    assert c.bruto is bruto  # o bruto guarda o resto: órgão, classe, destinatários, status
+
+
+def test_le_comunicacao_real_sem_link() -> None:
+    bruto = _resposta_real()["items"][1]
+    assert bruto["link"] is None
+    assert ler_comunicacao(bruto).tribunal == "TJPR"
+
+
+def test_cliente_le_o_envelope_real() -> None:
+    esperas: list[float] = []
+    vistas: list[httpx.Request] = []
+    cliente = _cliente([httpx.Response(200, json=_resposta_real())], esperas, vistas)
+    itens = cliente.comunicacoes("509289", "SP", date(2026, 11, 9), date(2026, 11, 16))
+    assert [ler_comunicacao(i).id for i in itens] == ["900000001", "900000002"]
 
 
 @pytest.mark.parametrize("faltando", ["id", "data_disponibilizacao"])
