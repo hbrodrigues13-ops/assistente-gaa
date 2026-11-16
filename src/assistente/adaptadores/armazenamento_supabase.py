@@ -100,3 +100,45 @@ class ArmazenamentoSupabase:
         )
         linhas = resposta.json()
         return date.fromisoformat(linhas[0]["fim"]) if linhas else None
+
+    def comunicacoes_desde(self, desde: date) -> list[dict[str, Any]]:
+        """Comunicações disponibilizadas a partir de `desde`, em páginas de 1.000."""
+        linhas: list[dict[str, Any]] = []
+        inicio = 0
+        while True:
+            resposta = self._requisitar(
+                "GET",
+                "comunicacoes",
+                params={
+                    "select": "id,oab,disponibilizacao,numero_processo,tribunal,bruto",
+                    "disponibilizacao": f"gte.{desde.isoformat()}",
+                    "order": "disponibilizacao,id",
+                },
+                headers={"Range": f"{inicio}-{inicio + 999}"},
+            )
+            lote = resposta.json()
+            linhas.extend(lote)
+            if len(lote) < 1000:
+                return linhas
+            inicio += 1000
+
+    def ids_analisados(self, ids: list[str]) -> set[str]:
+        encontrados: set[str] = set()
+        for n in range(0, len(ids), 200):
+            parte = ids[n : n + 200]
+            resposta = self._requisitar(
+                "GET",
+                "analises",
+                params={"select": "comunicacao_id", "comunicacao_id": f"in.({','.join(parte)})"},
+            )
+            encontrados.update(str(r["comunicacao_id"]) for r in resposta.json())
+        return encontrados
+
+    def salvar_analise(self, analise: dict[str, Any]) -> None:
+        self._requisitar(
+            "POST",
+            "analises",
+            params={"on_conflict": "comunicacao_id"},
+            headers={"Prefer": "resolution=merge-duplicates,return=minimal"},
+            json=analise,
+        )
