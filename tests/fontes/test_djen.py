@@ -194,3 +194,57 @@ def test_resposta_sem_items_e_formato_inesperado() -> None:
     cliente = _cliente([httpx.Response(200, json={"outra": []})], esperas, vistas)
     with pytest.raises(FormatoInesperado):
         cliente.comunicacoes("509289", "SP", date(2026, 11, 9), date(2026, 11, 16))
+
+
+# Formato real da resposta do DJEN, conferido na primeira coleta (15/11/2026, 410
+# comunicações). Valores fictícios; só os nomes e os tipos dos campos são reais.
+COMUNICACAO_REAL = {
+    "id": 412345678,
+    "data_disponibilizacao": "2026-11-09",
+    "datadisponibilizacao": "09/11/2026",
+    "siglaTribunal": "TJSP",
+    "tipoComunicacao": "Intimação",
+    "nomeOrgao": "1ª Vara Cível",
+    "idOrgao": 1234,
+    "texto": "Intimação fictícia para teste.",
+    "numero_processo": "12345672320258260344",
+    "numeroprocessocommascara": "1234567-23.2025.8.26.0344",
+    "meio": "D",
+    "meiocompleto": "Diário de Justiça Eletrônico Nacional",
+    "link": "https://exemplo.invalido/documento",
+    "tipoDocumento": "Despacho",
+    "nomeClasse": "EXECUÇÃO DE TÍTULO EXTRAJUDICIAL",
+    "codigoClasse": "12154",
+    "numeroComunicacao": 1,
+    "hash": "abc123",
+    "status": "P",
+    "ativo": True,
+    "data_cancelamento": None,
+    "motivo_cancelamento": None,
+    "destinatarios": [{"nome": "PARTE FICTÍCIA", "polo": "A", "comunicacao_id": 412345678}],
+    "destinatarioadvogados": [
+        {
+            "id": 1,
+            "comunicacao_id": 412345678,
+            "advogado_id": 2,
+            "created_at": "2026-11-08T10:00:00",
+            "updated_at": "2026-11-08T10:00:00",
+            "advogado": {
+                "id": 2,
+                "nome": "ADVOGADO FICTÍCIO",
+                "numero_oab": "999999",
+                "uf_oab": "SP",
+            },
+        }
+    ],
+}
+
+
+def test_formato_real_do_djen() -> None:
+    c = ler_comunicacao(COMUNICACAO_REAL)
+    assert c.id == "412345678"  # id numérico vira texto
+    assert c.disponibilizacao == date(2026, 11, 9)
+    assert c.numero_processo == "12345672320258260344"  # só dígitos, como no número CNJ
+    assert c.tribunal == "TJSP"
+    assert c.texto == "Intimação fictícia para teste."
+    assert c.bruto is COMUNICACAO_REAL

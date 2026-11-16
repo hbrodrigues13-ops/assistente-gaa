@@ -35,10 +35,10 @@ DJEN (por OAB, por data)
 
 | Item | Valor | Confiabilidade |
 |---|---|---|
-| Produção | `https://comunicaapi.pje.jus.br/api/v1/comunicacao` | por terceiros |
+| Produção | `https://comunicaapi.pje.jus.br/api/v1/comunicacao` | conferido (coleta real em 15/11/2026) |
 | Homologação | `https://hcomunicaapi.cnj.jus.br/api/v1` (o CNJ cita esse host; guias citam outro) | por terceiros |
-| Método | `GET` com parâmetros na URL | por terceiros |
-| Autenticação | não exige para consulta | por terceiros |
+| Método | `GET` com parâmetros na URL | conferido |
+| Autenticação | não exige para consulta | conferido |
 
 ### Parâmetros
 
@@ -86,40 +86,30 @@ def buscar_comunicacoes(oab: str, uf: str, inicio: str, fim: str, pagina: int = 
     return resposta.json()
 ```
 
-### O que guardar de cada comunicação
+### Formato da resposta (conferido em 15/11/2026)
 
-A estrutura da resposta foi **conferida** contra a API real em 15/11/2026 (`--diagnostico`, OAB 509289/SP) e está fixada, com dados fictícios, em `tests/fontes/dados/djen_resposta.json` e `tests/fontes/test_djen.py`. Falta o modelo pydantic.
+Primeira coleta real, de 08/11 a 15/11/2026: 410 comunicações das duas OABs, gravadas no Supabase. A lista vem em `items`, e cada item traz:
 
-Envelope: `status`, `message`, `count`, `items`. Cada item de `items` tem 24 campos:
-
-| Campo | Tipo | Observação |
+| Campo | Exemplo de formato | Uso |
 |---|---|---|
-| `id` | inteiro | identificador da comunicação |
-| `data_disponibilizacao` | texto | `AAAA-MM-DD` |
-| `datadisponibilizacao` | texto | `DD/MM/AAAA` |
-| `numero_processo` | texto | 20 dígitos, sem máscara |
-| `numeroprocessocommascara` | texto | formato CNJ |
-| `siglaTribunal`, `nomeOrgao`, `nomeClasse`, `codigoClasse` | texto | `codigoClasse` vem como texto |
-| `idOrgao`, `numeroComunicacao` | inteiro | |
-| `tipoComunicacao`, `tipoDocumento` | texto | |
-| `texto` | texto | |
-| `link` | texto ou nulo | |
-| `meio`, `meiocompleto` | texto | `D` = Diário de Justiça Eletrônico Nacional |
-| `hash` | texto | |
-| `ativo` | booleano | |
-| `status` | texto | só `P` foi observado |
-| `data_cancelamento`, `motivo_cancelamento` | nulo | só nulo foi observado |
-| `destinatarios` | lista | itens com `comunicacao_id`, `nome`, `polo` |
-| `destinatarioadvogados` | lista | itens com `id`, `comunicacao_id`, `advogado_id`, `created_at`, `updated_at` e `advogado` (`id`, `nome`, `numero_oab`, `uf_oab`) |
+| `id` | número (9 dígitos) | chave de idempotência (princípio 5) |
+| `data_disponibilizacao` | `2026-11-09` | entrada de `calcular_prazo` |
+| `datadisponibilizacao` | `09/11/2026` | mesma data, formato brasileiro |
+| `numero_processo` | 20 dígitos | entra em `interpretar_numero_cnj` |
+| `numeroprocessocommascara` | `NNNNNNN-DD.AAAA.J.TR.OOOO` | exibição |
+| `siglaTribunal` | `TJSP`, `TRT15`, `STJ` | filtro de escopo |
+| `tipoComunicacao` | `Intimação`, `Edital`, `Lista de distribuição`, `Pauta de julgamento`, `Ata de sessão` | classificação |
+| `tipoDocumento` | `Despacho`, `Notificação`, `Ato ordinatório` | classificação |
+| `nomeClasse`, `codigoClasse` | `EXECUÇÃO DE TÍTULO EXTRAJUDICIAL` | classe processual |
+| `nomeOrgao`, `idOrgao` | vara ou órgão | identificação da vara |
+| `texto` | texto integral | classificação e minuta |
+| `meio` | `D` (DJEN) ou `E` | meio da comunicação |
+| `ativo`, `status`, `data_cancelamento`, `motivo_cancelamento` | `true`, `P`, nulo | comunicação cancelada não gera prazo |
+| `destinatarios` | lista com `nome` e `polo` | polo do cliente |
+| `destinatarioadvogados` | lista com `advogado.numero_oab` e `advogado.uf_oab` | confirma a OAB intimada |
+| `link`, `hash`, `numeroComunicacao` | | referência ao documento |
 
-O mínimo a guardar:
-
-- identificador da comunicação: chave de idempotência (princípio 5);
-- data de disponibilização: entrada de `calcular_prazo`;
-- número do processo: entra em `interpretar_numero_cnj`, que dá o foro e a comarca;
-- sigla do tribunal, órgão julgador e tipo de comunicação;
-- texto integral e link;
-- destinatários e advogados intimados: confirmam se a OAB é do GAA.
+Distribuição na primeira coleta: 66% das comunicações eram trabalhistas (TRT e TST), fora do escopo do Fluxo 1 (CLAUDE.md, seção 5.4). Das 135 restantes, as classes mais frequentes foram execução de título extrajudicial, cumprimento de sentença e procedimento comum cível.
 
 ### Regras do projeto
 
