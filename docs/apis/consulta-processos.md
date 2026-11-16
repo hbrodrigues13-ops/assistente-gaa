@@ -88,7 +88,31 @@ def buscar_comunicacoes(oab: str, uf: str, inicio: str, fim: str, pagina: int = 
 
 ### O que guardar de cada comunicação
 
-A estrutura da resposta ainda **não foi conferida** contra a API real. Na primeira chamada, registrar os nomes exatos dos campos e fixar um modelo pydantic. O mínimo a guardar:
+A estrutura da resposta foi **conferida** contra a API real em 15/11/2026 (`--diagnostico`, OAB 509289/SP) e está fixada, com dados fictícios, em `tests/fontes/dados/djen_resposta.json` e `tests/fontes/test_djen.py`. Falta o modelo pydantic.
+
+Envelope: `status`, `message`, `count`, `items`. Cada item de `items` tem 24 campos:
+
+| Campo | Tipo | Observação |
+|---|---|---|
+| `id` | inteiro | identificador da comunicação |
+| `data_disponibilizacao` | texto | `AAAA-MM-DD` |
+| `datadisponibilizacao` | texto | `DD/MM/AAAA` |
+| `numero_processo` | texto | 20 dígitos, sem máscara |
+| `numeroprocessocommascara` | texto | formato CNJ |
+| `siglaTribunal`, `nomeOrgao`, `nomeClasse`, `codigoClasse` | texto | `codigoClasse` vem como texto |
+| `idOrgao`, `numeroComunicacao` | inteiro | |
+| `tipoComunicacao`, `tipoDocumento` | texto | |
+| `texto` | texto | |
+| `link` | texto ou nulo | |
+| `meio`, `meiocompleto` | texto | `D` = Diário de Justiça Eletrônico Nacional |
+| `hash` | texto | |
+| `ativo` | booleano | |
+| `status` | texto | só `P` foi observado |
+| `data_cancelamento`, `motivo_cancelamento` | nulo | só nulo foi observado |
+| `destinatarios` | lista | itens com `comunicacao_id`, `nome`, `polo` |
+| `destinatarioadvogados` | lista | itens com `id`, `comunicacao_id`, `advogado_id`, `created_at`, `updated_at` e `advogado` (`id`, `nome`, `numero_oab`, `uf_oab`) |
+
+O mínimo a guardar:
 
 - identificador da comunicação: chave de idempotência (princípio 5);
 - data de disponibilização: entrada de `calcular_prazo`;
@@ -263,7 +287,7 @@ Rede: a sessão de desenvolvimento na nuvem só acessa hosts liberados. Em 13/11
 
 ## 7. Pendências
 
-1. Testar a API do DJEN com a OAB 509.289/SP e fixar os nomes dos campos da resposta.
+1. Fixar um modelo pydantic da comunicação do DJEN (os nomes dos campos foram conferidos em 15/11/2026, tabela acima) e tratar comunicação cancelada (`ativo`, `status`, `data_cancelamento`).
 2. Conferir na wiki do CNJ a chave vigente e os limites do DataJud.
 3. Montar a base de teste da classificação com publicações reais anonimizadas antes de escolher o modelo em definitivo.
 
